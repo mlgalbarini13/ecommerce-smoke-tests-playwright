@@ -32,3 +32,14 @@ test('TC03 — Validation of required fields (empty username)', async ({ page })
   const errorMsg = page.getByText('Epic sadface: Username is required', { exact: true })
   await expect(errorMsg).toBeVisible();
 });
+
+test('TC04 — User blocked cannot log in', async ({ page }) => {
+  await page.goto('/');
+
+  await page.getByPlaceholder('Username').fill('locked_out_user');
+  await page.getByPlaceholder('Password').fill('secret_sauce');
+  await page.getByRole('button', { name: /login/i }).click();
+
+  const errorMsg = page.getByText('Epic sadface: Sorry, this user has been locked out.', { exact: true })
+  await expect(errorMsg).toBeVisible();
+});
